@@ -17,9 +17,4 @@ public class BridgeComponent : MonoBehaviour {
 		}
 		throw new MissingReferenceException();
 	}
-
-	void OnMouseDown() {
-		Debug.Log("Destroying bridge from " + this.islandA.ToString() + " to " + this.islandB.ToString());
-		Object.Destroy(this.gameObject);
-	}
 }
