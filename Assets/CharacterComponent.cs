@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CharacterComponent : MonoBehaviour {
+public abstract class CharacterComponent : MonoBehaviour {
 	public IslandComponent island;
 
 	public float turnSpeed = 4.0f;
@@ -10,25 +10,23 @@ public class CharacterComponent : MonoBehaviour {
 
 	private Quaternion facing;
 	private Vector3 towardTarget;
+	public string label;
 
-	// Use this for initialization
-	void Start () {
-
-	}
 
 	public void MoveToIsland(IslandComponent newIsland) {
 		this.island = newIsland;
 		transform.LookAt (this.island.transform.position);
 	}
+
 	
 	// Update is called once per frame
 	void Update () {
 		towardTarget = this.island.transform.position - transform.position;
 
-
-
 		if (Mathf.Abs (towardTarget.magnitude) > positionTolerance){
 			transform.position += towardTarget.normalized * moveSpeed * Time.deltaTime;
 		}
 	}
+
+	public abstract void TurnUpdate (WorldState state);
 }

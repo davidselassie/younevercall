@@ -5,11 +5,6 @@ public class BridgeComponent : MonoBehaviour {
 	public IslandComponent islandA;
 	public IslandComponent islandB;
 
-	// Use this for initialization
-	void Start () {
-
-	}
-
 	public bool Touches (IslandComponent island) {
 		return island == this.islandA || island == this.islandB;
 	}
@@ -21,10 +16,5 @@ public class BridgeComponent : MonoBehaviour {
 			return this.islandA;
 		}
 		throw new MissingReferenceException();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }
