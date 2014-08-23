@@ -5,11 +5,6 @@ public class BridgeComponent : MonoBehaviour {
 	public IslandComponent islandA;
 	public IslandComponent islandB;
 
-	// Use this for initialization
-	void Start () {
-
-	}
-
 	public bool Touches (IslandComponent island) {
 		return island == this.islandA || island == this.islandB;
 	}
@@ -22,9 +17,9 @@ public class BridgeComponent : MonoBehaviour {
 		}
 		throw new MissingReferenceException();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	void OnMouseDown() {
+		Debug.Log("Destroying bridge from " + this.islandA.ToString() + " to " + this.islandB.ToString());
+		Object.Destroy(this.gameObject);
 	}
 }
