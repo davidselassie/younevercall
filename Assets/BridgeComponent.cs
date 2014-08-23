@@ -9,6 +9,7 @@ public class BridgeComponent : MonoBehaviour {
 	void Start () {
 
 	}
+	//OMG COMMENT LOL
 
 	public bool Touches (IslandComponent island) {
 		return island == this.islandA || island == this.islandB;
