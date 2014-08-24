@@ -14,23 +14,19 @@ public class LevelController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		this.UpdateGameObjectsToReflectAbstractState(this.FindState());
-		IList<IslandComponent> islands = FindObjectsOfType(typeof(IslandComponent)) as IslandComponent[];
-		int lengthOfIslands = islands.Count;
-		for (int i = 0; i < lengthOfIslands; i++){
-			for (int j = 0; j < lengthOfIslands; j++){
-				BuildBridge(islands[i],islands[j]);
+        WorldState state = this.FindState();
+		this.UpdateGameObjectsToReflectAbstractState(state);
+		foreach (IslandComponent a in state.islands){
+			foreach (IslandComponent b in state.islands) {
+				BuildBridge(a, b);
 			}
 		}
-
 	}
 
 	WorldState FindState () {
-		IList<BridgeComponent> bridges = FindObjectsOfType(typeof(BridgeComponent)) as BridgeComponent[];
-		IList<CharacterComponent> characters = FindObjectsOfType(typeof(CharacterComponent)) as CharacterComponent[];
-		IList<IslandComponent> islands = FindObjectsOfType(typeof(IslandComponent)) as IslandComponent[];
-
-		int lengthOfIslands = islands.Count;
+		HashSet<BridgeComponent> bridges = new HashSet<BridgeComponent>(FindObjectsOfType(typeof(BridgeComponent)) as BridgeComponent[]);
+        HashSet<CharacterComponent> characters = new HashSet<CharacterComponent>(FindObjectsOfType(typeof(CharacterComponent)) as CharacterComponent[]);
+        HashSet<IslandComponent> islands = new HashSet<IslandComponent>(FindObjectsOfType(typeof(IslandComponent)) as IslandComponent[]);
 		return new WorldState(bridges, characters, islands);
 
 	}
