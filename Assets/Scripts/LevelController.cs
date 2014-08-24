@@ -160,13 +160,7 @@ public class LevelController : MonoBehaviour
 
     public int CurrentScore (WorldState state)
     {
-        Dictionary<IslandComponent, int> population = new Dictionary<IslandComponent, int> ();
-        foreach (CharacterComponent character in state.characters) {
-            int lastPopulation = 0;
-            population.TryGetValue (character.island, out lastPopulation);
-            population.Add (character.island, lastPopulation + 1);
-        }
-        return population.Values.Max ();
+        return state.Census().Select(islandChars => islandChars.Value.Count).Max();
     }
 
     public void OnGUI ()
