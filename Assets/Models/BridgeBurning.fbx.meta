@@ -1,0 +1,194 @@
+fileFormatVersion: 2
+guid: 73bcaffc36f15ba4aa5b7dccdf0402d6
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Group_Fracture_14
+    100004: Pieces__1
+    100006: Pieces__10
+    100008: Pieces__11
+    100010: Pieces__12
+    100012: Pieces__13
+    100014: Pieces__14
+    100016: Pieces__2
+    100018: Pieces__3
+    100020: Pieces__4
+    100022: Pieces__5
+    100024: Pieces__6
+    100026: Pieces__7
+    100028: Pieces__8
+    100030: Pieces__9
+    400000: //RootNode
+    400002: Group_Fracture_14
+    400004: Pieces__1
+    400006: Pieces__10
+    400008: Pieces__11
+    400010: Pieces__12
+    400012: Pieces__13
+    400014: Pieces__14
+    400016: Pieces__2
+    400018: Pieces__3
+    400020: Pieces__4
+    400022: Pieces__5
+    400024: Pieces__6
+    400026: Pieces__7
+    400028: Pieces__8
+    400030: Pieces__9
+    2300000: Pieces__1
+    2300002: Pieces__10
+    2300004: Pieces__11
+    2300006: Pieces__12
+    2300008: Pieces__13
+    2300010: Pieces__14
+    2300012: Pieces__2
+    2300014: Pieces__3
+    2300016: Pieces__4
+    2300018: Pieces__5
+    2300020: Pieces__6
+    2300022: Pieces__7
+    2300024: Pieces__8
+    2300026: Pieces__9
+    3300000: Pieces__1
+    3300002: Pieces__10
+    3300004: Pieces__11
+    3300006: Pieces__12
+    3300008: Pieces__13
+    3300010: Pieces__14
+    3300012: Pieces__2
+    3300014: Pieces__3
+    3300016: Pieces__4
+    3300018: Pieces__5
+    3300020: Pieces__6
+    3300022: Pieces__7
+    3300024: Pieces__8
+    3300026: Pieces__9
+    4300000: Pieces__1
+    4300002: Pieces__2
+    4300004: Pieces__3
+    4300006: Pieces__4
+    4300008: Pieces__5
+    4300010: Pieces__6
+    4300012: Pieces__7
+    4300014: Pieces__8
+    4300016: Pieces__9
+    4300018: Pieces__10
+    4300020: Pieces__11
+    4300022: Pieces__12
+    4300024: Pieces__13
+    4300026: Pieces__14
+    7400000: C4D Animation Take
+    9500000: //RootNode
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 1
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: C4D Animation Take
+      takeName: C4D Animation Take
+      firstFrame: 0
+      lastFrame: 250
+      wrapMode: 1
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Group_Fracture_14
+        weight: 1
+      - path: Group_Fracture_14/Pieces__1
+        weight: 1
+      - path: Group_Fracture_14/Pieces__2
+        weight: 1
+      - path: Group_Fracture_14/Pieces__3
+        weight: 1
+      - path: Group_Fracture_14/Pieces__4
+        weight: 1
+      - path: Group_Fracture_14/Pieces__5
+        weight: 1
+      - path: Group_Fracture_14/Pieces__6
+        weight: 1
+      - path: Group_Fracture_14/Pieces__7
+        weight: 1
+      - path: Group_Fracture_14/Pieces__8
+        weight: 1
+      - path: Group_Fracture_14/Pieces__9
+        weight: 1
+      - path: Group_Fracture_14/Pieces__10
+        weight: 1
+      - path: Group_Fracture_14/Pieces__11
+        weight: 1
+      - path: Group_Fracture_14/Pieces__12
+        weight: 1
+      - path: Group_Fracture_14/Pieces__13
+        weight: 1
+      - path: Group_Fracture_14/Pieces__14
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  additionalBone: 0
+  userData: 
