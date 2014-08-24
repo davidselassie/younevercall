@@ -153,7 +153,6 @@ public class LevelController : MonoBehaviour
             //if we clicked on one island and let go of another, BuildBridge between them
             if (clickedIsland && this.mouseDownIsland != null) {
                 BuildBridge (clickedIsland, this.mouseDownIsland);
-
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class WorldState
 {
@@ -13,6 +14,11 @@ public class WorldState
         this.bridges = bridges;
         this.islands = islands;
         this.characters = characters;
+    }
+
+    public List<BridgeComponent> BridgesNewestToOldest ()
+    {
+        return this.bridges.OrderByDescending (b => b.created).ToList ();
     }
 
     public List<IslandComponent> ShortestBridgePath (IslandComponent from, IslandComponent to)
