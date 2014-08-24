@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class BridgeInspectorCharacterController : CharacterComponent
+public class BridgeInspectorCharacterComponent : CharacterComponent
 {
     public override void TurnUpdate (WorldState state)
     {
