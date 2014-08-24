@@ -15,24 +15,22 @@ public class LevelController : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        this.UpdateGameObjectsToReflectAbstractState (this.FindState ());
-
-        //build every legal bridge for the starting state
-        IList<IslandComponent> islands = FindObjectsOfType (typeof(IslandComponent)) as IslandComponent[];
-        int lengthOfIslands = islands.Count;
-        for (int i = 0; i < lengthOfIslands; i++) {
-            for (int j = 0; j < lengthOfIslands; j++) {
-                BuildBridge (islands [i], islands [j]);
+        WorldState state = this.FindState ();
+        this.UpdateGameObjectsToReflectAbstractState (state);
+        foreach (IslandComponent a in state.islands) {
+            foreach (IslandComponent b in state.islands) {
+                BuildBridge (a, b);
             }
         }
     }
 
     WorldState FindState ()
     {
-        IList<BridgeComponent> bridges = FindObjectsOfType (typeof(BridgeComponent)) as BridgeComponent[];
-        IList<CharacterComponent> characters = FindObjectsOfType (typeof(CharacterComponent)) as CharacterComponent[];
-        IList<IslandComponent> islands = FindObjectsOfType (typeof(IslandComponent)) as IslandComponent[];
-        
+
+        HashSet<BridgeComponent> bridges = new HashSet<BridgeComponent> (FindObjectsOfType (typeof(BridgeComponent)) as BridgeComponent[]);
+        HashSet<CharacterComponent> characters = new HashSet<CharacterComponent> (FindObjectsOfType (typeof(CharacterComponent)) as CharacterComponent[]);
+        HashSet<IslandComponent> islands = new HashSet<IslandComponent> (FindObjectsOfType (typeof(IslandComponent)) as IslandComponent[]);
+
         return new WorldState (bridges, characters, islands);
 
     }
@@ -56,6 +54,7 @@ public class LevelController : MonoBehaviour
     {
         bool enoughBridgesDestroyed = bridgeDestroyedDuringTurnCount >= 1;
         if (!enoughBridgesDestroyed) {
+
             Debug.Log ("Can't advance turn: not enough bridges destroyed. Destroyed ==" + bridgeDestroyedDuringTurnCount);
         }
         return enoughBridgesDestroyed;
@@ -131,7 +130,7 @@ public class LevelController : MonoBehaviour
             this.TurnUpdateComponents (state);
             this.UpdateGameObjectsToReflectAbstractState (state);
         }
-        
+
         if (Input.GetMouseButtonDown (0)) {
             GameObject clicked = this.ClickedObject ();
             BridgeComponent clickedBridge = clicked.GetComponent<BridgeComponent> ();
@@ -150,10 +149,12 @@ public class LevelController : MonoBehaviour
         if (Input.GetMouseButtonUp (0)) {
             GameObject clicked = this.ClickedObject ();
             IslandComponent clickedIsland = clicked.GetComponent<IslandComponent> ();
+
             //if we clicked on one island and let go of another, BuildBridge between them
             if (clickedIsland && this.mouseDownIsland != null) {
                 BuildBridge (clickedIsland, this.mouseDownIsland);
                 this.bridgeDestroyedDuringTurnCount--;
+
             }
         }
     }

@@ -4,35 +4,15 @@ using System.Collections.Generic;
 
 public class WorldState
 {
-    public IList<BridgeComponent> bridges;
-    public IList<CharacterComponent> characters;
-    public IList<IslandComponent> islands;
+    public HashSet<BridgeComponent> bridges;
+    public HashSet<CharacterComponent> characters;
+    public HashSet<IslandComponent> islands;
 
-    public WorldState (IList<BridgeComponent> bridges, IList<CharacterComponent> characters, IList<IslandComponent> islands)
+    public WorldState (HashSet<BridgeComponent> bridges, HashSet<CharacterComponent> characters, HashSet<IslandComponent> islands)
     {
         this.bridges = bridges;
         this.islands = islands;
         this.characters = characters;
-    }
-
-    public IslandComponent IslandWithLabel (string label)
-    {
-        foreach (IslandComponent island in this.islands) {
-            if (island.label == label) {
-                return island;
-            }
-        }
-        return null;
-    }
-
-    public CharacterComponent CharacterWithLabel (string label)
-    {
-        foreach (CharacterComponent character in this.characters) {
-            if (character.label == label) {
-                return character;
-            }
-        }
-        return null;
     }
 
     public List<IslandComponent> ShortestBridgePath (IslandComponent from, IslandComponent to)
@@ -87,9 +67,9 @@ public class WorldState
         return foundPath;
     }
     
-    private IList<BridgeComponent> AllBridgesTouchingIsland (IslandComponent island)
+    private HashSet<BridgeComponent> AllBridgesTouchingIsland (IslandComponent island)
     {
-        IList<BridgeComponent> touching = new List<BridgeComponent> (this.bridges.Count);
+        HashSet<BridgeComponent> touching = new HashSet<BridgeComponent> ();
         foreach (BridgeComponent bridge in this.bridges) {
             if (bridge.Touches (island)) {
                 touching.Add (bridge);
@@ -98,10 +78,10 @@ public class WorldState
         return touching;
     }
     
-    private IList<IslandComponent> AllIslandsAccessibleFromIsland (IslandComponent from)
+    public HashSet<IslandComponent> AllIslandsAccessibleFromIsland (IslandComponent from)
     {
-        IList<BridgeComponent> bridgesTouching = this.AllBridgesTouchingIsland (from);
-        IList<IslandComponent> accessible = new List<IslandComponent> (bridgesTouching.Count);
+        HashSet<BridgeComponent> bridgesTouching = this.AllBridgesTouchingIsland (from);
+        HashSet<IslandComponent> accessible = new HashSet<IslandComponent> ();
         foreach (BridgeComponent bridge in bridgesTouching) {
             accessible.Add (bridge.LeadsTo (from));
         }
