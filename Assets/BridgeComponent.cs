@@ -4,6 +4,11 @@ public class BridgeComponent : MonoBehaviour
 {
     public IslandComponent islandA;
     public IslandComponent islandB;
+    public float created;
+
+    public void Start () {
+        this.created = Time.time;
+    }
 
     public bool Touches (IslandComponent island)
     {
