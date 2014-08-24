@@ -7,10 +7,12 @@ public abstract class CharacterComponent : MonoBehaviour {
 	public float turnSpeed = 4.0f;
 	public float moveSpeed = 10.0f;
 	public float positionTolerance = 0.4f;
+	public string label;
 
 	private Quaternion facing;
 	private Vector3 towardTarget;
-	public string label;
+	private Vector3 newPosition;
+
 
 
 	public void MoveToIsland(IslandComponent newIsland) {
@@ -24,6 +26,7 @@ public abstract class CharacterComponent : MonoBehaviour {
 		towardTarget = this.island.transform.position - transform.position;
 
 		if (Mathf.Abs (towardTarget.magnitude) > positionTolerance){
+
 			transform.position += towardTarget.normalized * moveSpeed * Time.deltaTime;
 		}
 	}
