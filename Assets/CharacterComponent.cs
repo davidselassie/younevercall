@@ -34,11 +34,10 @@ public abstract class CharacterComponent : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        towardTarget = this.island.transform.position - transform.position;
+        Vector3 towardTarget = this.island.transform.position - transform.position;
 
         if (Mathf.Abs (towardTarget.magnitude) > positionTolerance) {
-            
-            newPosition = transform.position + towardTarget.normalized * moveSpeed * Time.deltaTime;
+            Vector3 newPosition = transform.position + towardTarget.normalized * moveSpeed * Time.deltaTime;
             transform.position = new Vector3 (newPosition.x, characterFeetHeight, newPosition.z);
 
         }

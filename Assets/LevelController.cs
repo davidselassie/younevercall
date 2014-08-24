@@ -26,13 +26,11 @@ public class LevelController : MonoBehaviour
 
     WorldState FindState ()
     {
-
         HashSet<BridgeComponent> bridges = new HashSet<BridgeComponent> (FindObjectsOfType (typeof(BridgeComponent)) as BridgeComponent[]);
         HashSet<CharacterComponent> characters = new HashSet<CharacterComponent> (FindObjectsOfType (typeof(CharacterComponent)) as CharacterComponent[]);
         HashSet<IslandComponent> islands = new HashSet<IslandComponent> (FindObjectsOfType (typeof(IslandComponent)) as IslandComponent[]);
 
         return new WorldState (bridges, characters, islands);
-
     }
 
     void UpdateGameObjectsToReflectAbstractState (WorldState state)
@@ -54,7 +52,6 @@ public class LevelController : MonoBehaviour
     {
         bool enoughBridgesDestroyed = bridgeDestroyedDuringTurnCount >= 1;
         if (!enoughBridgesDestroyed) {
-
             Debug.Log ("Can't advance turn: not enough bridges destroyed. Destroyed ==" + bridgeDestroyedDuringTurnCount);
         }
         return enoughBridgesDestroyed;
