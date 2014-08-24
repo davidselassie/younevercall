@@ -6,7 +6,8 @@ public class BridgeComponent : MonoBehaviour
     public IslandComponent islandB;
     public float created;
 
-    public void Start () {
+    public void Start ()
+    {
         this.created = Time.time;
     }
 

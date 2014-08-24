@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FollowOnceCharacterComponent : CharacterComponent {
+public class FollowOnceCharacterComponent : CharacterComponent
+{
     private CharacterComponent lastTouched = null;
 
-    public override void TurnUpdate (WorldState state) {
+    public override void TurnUpdate (WorldState state)
+    {
         if (!this.lastTouched) {
             foreach (CharacterComponent character in state.characters) {
                 if (character.name != this.name && character.island == this.island) {
@@ -12,7 +14,7 @@ public class FollowOnceCharacterComponent : CharacterComponent {
                 }
             }
         } else {
-            this.MoveToIsland(this.lastTouched.island);
+            this.MoveToIsland (this.lastTouched.island);
             this.lastTouched = null;
         }
     }

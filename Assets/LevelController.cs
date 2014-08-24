@@ -152,7 +152,6 @@ public class LevelController : MonoBehaviour
             if (clickedIsland && this.mouseDownIsland != null) {
                 BuildBridge (clickedIsland, this.mouseDownIsland);
                 this.bridgeDestroyedDuringTurnCount--;
-
             }
         }
     }
