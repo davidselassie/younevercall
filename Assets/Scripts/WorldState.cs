@@ -93,4 +93,18 @@ public class WorldState
         }
         return accessible;
     }
+
+    public Dictionary<IslandComponent, HashSet<CharacterComponent>> Census ()
+    {
+        Dictionary<IslandComponent, HashSet<CharacterComponent>> tally = new Dictionary<IslandComponent, HashSet<CharacterComponent>> ();
+        foreach (CharacterComponent character in this.characters) {
+            HashSet<CharacterComponent> charactersOnSameIsland;
+            if (!tally.TryGetValue (character.island, out charactersOnSameIsland)) {
+                charactersOnSameIsland = new HashSet<CharacterComponent> ();
+                tally.Add (character.island, charactersOnSameIsland);
+            }
+            charactersOnSameIsland.Add (character);
+        }
+        return tally;
+    }
 }

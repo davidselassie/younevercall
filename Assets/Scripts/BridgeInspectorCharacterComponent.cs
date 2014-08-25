@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class BridgeInspectorCharacterController : CharacterComponent
+public class BridgeInspectorCharacterComponent : CharacterComponent
 {
     public override void TurnUpdate (WorldState state)
     {
@@ -20,7 +20,7 @@ public class BridgeInspectorCharacterController : CharacterComponent
 
                 // Start along that path. We added the current island at 0, so 1 will be the other side of the bridge.
                 this.MoveToIsland (shortestPath [1]);
-            } catch (WorldState.NoPathException ex) {
+            } catch (WorldState.NoPathException) {
                 // If there's no path to the new bridge, do nothing.
             }
         }

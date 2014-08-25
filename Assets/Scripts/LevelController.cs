@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class LevelController : MonoBehaviour
 {
@@ -155,5 +156,16 @@ public class LevelController : MonoBehaviour
                 BuildBridge (clickedIsland, this.mouseDownIsland);
             }
         }
+    }
+
+    public int CurrentScore (WorldState state)
+    {
+        return state.Census().Select(islandChars => islandChars.Value.Count).Max();
+    }
+
+    public void OnGUI ()
+    {
+        WorldState state = this.FindState ();
+        GUI.Box (new Rect (10, 10, 200, 25), String.Format ("Current Score: {0}", this.CurrentScore (state)));
     }
 }

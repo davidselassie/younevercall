@@ -4,17 +4,16 @@ using System.Collections.Generic;
 
 public class IslandComponent : MonoBehaviour
 {
-    public List<GameObject> standingPoints;
 
-    public GameObject FindOpenSpot(){
+    public List<WaypointComponent> waypoints;
 
-        for (int i = 0; i < standingPoints.Count; i++) {
-            if (standingPoints[i].GetComponent<StandingPoint>().occupied == false){
-                Debug.Log("found an empty spot." + standingPoints[i]);
-                return standingPoints[i];
+    public WaypointComponent UnoccupiedWaypoint ()
+    {
+        foreach (WaypointComponent waypoint in this.waypoints) {
+            if (!waypoint.occupiedBy) {
+                return waypoint;
             }
         }
-        Debug.Log("NO EMPTY SPOTS FOUND");
-        return this.gameObject;
+        return null;
     }
 }

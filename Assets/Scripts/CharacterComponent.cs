@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public abstract class CharacterComponent : MonoBehaviour
 {
     public IslandComponent island;  // Never set directly other than in Unity inspector, always use Move* functions.
+    private WaypointComponent islandWaypoint;
     public List<IslandComponent> islandHistory = new List<IslandComponent> ();
     public float turnSpeed = 4.0f;
     public float moveSpeed = 10.0f;
@@ -16,9 +17,19 @@ public abstract class CharacterComponent : MonoBehaviour
 
     public void MoveToIsland (IslandComponent newIsland)
     {
+        if (newIsland != this.island) {
+            // Un-occupy our existing waypoint.
+            if (this.islandWaypoint) {
+                this.islandWaypoint.occupiedBy = null;
+            }
+            // Occupy a new one.
+            this.islandWaypoint = newIsland.UnoccupiedWaypoint ();
+            this.islandWaypoint.occupiedBy = this;
+
+            transform.LookAt (this.islandWaypoint.transform.position);
+        }
         this.island = newIsland;
         islandHistory.Add (this.island);
-        transform.LookAt (this.island.transform.position);
     }
 
     public void MoveTowardsIsland (WorldState state, IslandComponent target)
@@ -36,7 +47,7 @@ public abstract class CharacterComponent : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        Vector3 towardTarget = this.island.transform.position - transform.position;
+        Vector3 towardTarget = this.islandWaypoint.transform.position - transform.position;
 
         if (Mathf.Abs (towardTarget.magnitude) > positionTolerance) {
             Vector3 newPosition = transform.position + towardTarget.normalized * moveSpeed * Time.deltaTime;
