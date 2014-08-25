@@ -25,6 +25,9 @@ public abstract class CharacterComponent : MonoBehaviour
             // Occupy a new one.
             this.islandWaypoint = newIsland.UnoccupiedWaypoint ();
             this.islandWaypoint.occupiedBy = this;
+
+            AudioSource walkingNoise = GetComponent<AudioSource> ();
+            walkingNoise.PlayDelayed (Random.Range (0.0f, 0.5f));
         }
         transform.LookAt (this.islandWaypoint.transform.position);
         this.island = newIsland;

@@ -85,7 +85,7 @@ public class LevelController : MonoBehaviour
     private void BuildBridge (WorldState state, IslandComponent island1, IslandComponent island2, bool playSound)
     {
         if ((island1.transform.position - island2.transform.position).magnitude > maxBridgeLength) {
-            this.messageGUIText.text = "Can't build bridge! Would be too long.";
+            this.messageGUIText.text = "Can't build that bridge. It would be too long.";
         } else if (island1 != island2) {
             bool bridgeAlreadyExists = state.AllIslandsAccessibleFromIsland (island1).Contains (island2);
             if (!bridgeAlreadyExists) {
@@ -124,7 +124,12 @@ public class LevelController : MonoBehaviour
 
     private void OnGameOver (WorldState state)
     {
-        this.messageGUIText.text = String.Format ("Game over. You got {0} family members together! Space to play again.", this.CurrentScore (state));
+        if (this.CurrentScore (state) > 1) {
+            this.messageGUIText.text = String.Format ("Game over. You brought {0} family members together. Space to play again.", this.CurrentScore (state));
+        } else {
+            this.messageGUIText.text = "Game over. You brought no family members together. Space to play again.";
+        }
+
     }
 
     void Update ()
@@ -137,7 +142,7 @@ public class LevelController : MonoBehaviour
                 this.PerformEndTurnStateUpdates (state);
                 this.UpdateGameObjectsToReflectAbstractState (state);
                 if (this.CanAdvanceTurn(state)) {
-                    this.messageGUIText.text = "Press space to end turn!";
+                    this.messageGUIText.text = "Press space to end turn.";
                 } else {
                     this.messageGUIText.text = "";
                 }
@@ -159,7 +164,7 @@ public class LevelController : MonoBehaviour
                     this.DestroyBridge (state, clickedBridge);
                     this.bridgeGUIText.text = String.Format ("Current Number of Bridges: {0}", state.bridges.Count);
                     if (this.CanAdvanceTurn (state)) {
-                        this.messageGUIText.text = "Press space to end turn!";
+                        this.messageGUIText.text = "Press space to end turn.";
                     } else {
                         this.messageGUIText.text = "";
                     }
