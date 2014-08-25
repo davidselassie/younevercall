@@ -6,26 +6,25 @@ using System.Linq;
 
 public class LevelController : MonoBehaviour
 {
-    private int bridgeDestroyedDuringTurnCount = 0;
+    private int maxBridgesToEndTurn;
     private IslandComponent mouseDownIsland = null;
     private GameObject newBridge;
     public GameObject bridgeFire;
     public GameObject bridgePrefab;
     public float maxBridgeLength = 12.0f;
-    public int bridgesDestroyedForTurn = 1;
     private string errorMessage = null;
 
-    // Use this for initialization
     void Start ()
     {
         WorldState state = this.FindState ();
         foreach (IslandComponent a in state.islands) {
             foreach (IslandComponent b in state.islands) {
-                BuildBridge (a, b);
+                BuildBridge (state, a, b);
+                state = this.FindState ();
             }
         }
         this.errorMessage = null;
-        this.bridgeDestroyedDuringTurnCount = 0;
+        this.maxBridgesToEndTurn = state.bridges.Count - 1;
     }
 
     WorldState FindState ()
@@ -33,7 +32,6 @@ public class LevelController : MonoBehaviour
         HashSet<BridgeComponent> bridges = new HashSet<BridgeComponent> (FindObjectsOfType (typeof(BridgeComponent)) as BridgeComponent[]);
         HashSet<CharacterComponent> characters = new HashSet<CharacterComponent> (FindObjectsOfType (typeof(CharacterComponent)) as CharacterComponent[]);
         HashSet<IslandComponent> islands = new HashSet<IslandComponent> (FindObjectsOfType (typeof(IslandComponent)) as IslandComponent[]);
-
         return new WorldState (bridges, characters, islands);
     }
 
@@ -44,17 +42,17 @@ public class LevelController : MonoBehaviour
         }
     }
 
-    void TurnUpdateComponents (WorldState state)
+    void PerformEndTurnStateUpdates (WorldState state)
     {
         foreach (CharacterComponent character in state.characters) {
             character.TurnUpdate (state);
         }
-        this.bridgeDestroyedDuringTurnCount = 0;
+        this.maxBridgesToEndTurn--;
     }
 
-    private bool CanAdvanceTurn ()
+    private bool CanAdvanceTurn (WorldState state)
     {
-        return this.bridgeDestroyedDuringTurnCount >= this.bridgesDestroyedForTurn;
+        return state.bridges.Count <= this.maxBridgesToEndTurn;
     }
 
     private GameObject ClickedObject ()
@@ -64,50 +62,28 @@ public class LevelController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast (ray, out hit, 100)) {
             return hit.transform.gameObject;
+        } else {
+            return null;
         }
-        //Returns an arbitrary GameObject -- the Main Camera, because there will always be one
-        //This avoid a NullReferenceException that would be triggered by returning Null
-        return GameObject.FindGameObjectWithTag ("MainCamera");
     }
 
-    private void DestroyBridge (BridgeComponent bridge)
+    private void DestroyBridge (WorldState state, BridgeComponent bridge)
     {
-        //Debug.Log ("Destroying bridge from " + bridge.islandA.ToString () + " to " + bridge.islandB.ToString ());
         GameObject rubble = Instantiate (bridgeFire, bridge.transform.position, bridge.transform.rotation) as GameObject;
         rubble.transform.localScale = bridge.transform.localScale;
         Destroy (bridge.gameObject);
-        this.bridgeDestroyedDuringTurnCount++;
-        if (this.CanAdvanceTurn()) {
-            this.errorMessage = "Press space to advance turn!";
-        } else {
-            this.errorMessage = null;
-        }
+        state.bridges.Remove(bridge);
     }
 
-    private void BuildBridge (IslandComponent island1, IslandComponent island2)
+    private void BuildBridge (WorldState state, IslandComponent island1, IslandComponent island2)
     {
         if ((island1.transform.position - island2.transform.position).magnitude > maxBridgeLength) {
             this.errorMessage = "Can't build bridge! Would be too long.";
-            return;
-        }
-
-        if (island1 != island2) {
-            //and make sure there isn't a bridge connecting those two already
-            IList<BridgeComponent> allBridges = FindObjectsOfType (typeof(BridgeComponent)) as BridgeComponent[];
-            int lengthOfAllBridges = allBridges.Count;
-            bool bridgeAlreadyExists = false;
-            
-            for (int i = 0; i < lengthOfAllBridges; i++) {
-                if ((allBridges [i].islandA == island1 && allBridges [i].islandB == island2)
-                    || (allBridges [i].islandA == island2 && allBridges [i].islandB == island1)) {
-                    bridgeAlreadyExists = true;
-                }
-            }
-
+        } else if (island1 != island2) {
+            bool bridgeAlreadyExists = state.AllIslandsAccessibleFromIsland (island1).Contains (island2);
             if (!bridgeAlreadyExists) {
                 //make a new bridge connecting them
                 newBridge = Instantiate (bridgePrefab, (island2.transform.position + island1.transform.position) / 2, Quaternion.identity) as GameObject;
-                this.bridgeDestroyedDuringTurnCount--;
                 this.errorMessage = null;
                 
                 //the bridge prefab is an empty game object, so its child the cylinder is what we want to play with
@@ -128,40 +104,46 @@ public class LevelController : MonoBehaviour
             }
         }
     }
-        
-    // Update is called once per frame
+
     void Update ()
     {
-        bool spacePressed = Input.GetKeyDown (KeyCode.Space);
-        if (spacePressed && this.CanAdvanceTurn ()) {
+        if (Input.GetKeyDown (KeyCode.Space)) {
             WorldState state = this.FindState ();
-            this.TurnUpdateComponents (state);
-            this.UpdateGameObjectsToReflectAbstractState (state);
-            this.errorMessage = null;
-        }
-
-        if (Input.GetMouseButtonDown (0)) {
-            GameObject clicked = this.ClickedObject ();
-            BridgeComponent clickedBridge = clicked.GetComponent<BridgeComponent> ();
-            if (clickedBridge) {
-                this.DestroyBridge (clickedBridge);
-            }
-
-            IslandComponent clickedIsland = clicked.GetComponent<IslandComponent> ();
-            if (clickedIsland) {
-                this.mouseDownIsland = clickedIsland;
+            if (this.CanAdvanceTurn (state)) {
+                this.PerformEndTurnStateUpdates (state);
+                this.UpdateGameObjectsToReflectAbstractState (state);
+                this.errorMessage = null;
             } else {
-                this.mouseDownIsland = null;
+                this.errorMessage = "You need fewer bridges before this turn can end.";
             }
-        }
-
-        if (Input.GetMouseButtonUp (0)) {
+        } else if (Input.GetMouseButtonDown (0)) {
             GameObject clicked = this.ClickedObject ();
-            IslandComponent clickedIsland = clicked.GetComponent<IslandComponent> ();
-
-            //if we clicked on one island and let go of another, BuildBridge between them
-            if (clickedIsland && this.mouseDownIsland != null) {
-                BuildBridge (clickedIsland, this.mouseDownIsland);
+            if (clicked) {
+                BridgeComponent clickedBridge = clicked.GetComponent<BridgeComponent> ();
+                IslandComponent clickedIsland = clicked.GetComponent<IslandComponent> ();
+                this.mouseDownIsland = null;
+                if (clickedBridge) {
+                    WorldState state = this.FindState ();
+                    this.DestroyBridge (state, clickedBridge);
+                    if (this.CanAdvanceTurn (state)) {
+                        this.errorMessage = "Press space to end turn!";
+                    } else {
+                        this.errorMessage = null;
+                    }
+                } else if (clickedIsland) {
+                    this.mouseDownIsland = clickedIsland;
+                }
+            }
+        } else if (Input.GetMouseButtonUp (0)) {
+            GameObject clicked = this.ClickedObject ();
+            if (clicked) {
+                IslandComponent clickedIsland = clicked.GetComponent<IslandComponent> ();
+                //if we clicked on one island and let go of another, BuildBridge between them
+                if (clickedIsland && this.mouseDownIsland != null) {
+                    WorldState state = this.FindState ();
+                    this.BuildBridge (state, clickedIsland, this.mouseDownIsland);
+                    this.mouseDownIsland = null;
+                }
             }
         }
     }
@@ -174,8 +156,8 @@ public class LevelController : MonoBehaviour
     public void OnGUI ()
     {
         WorldState state = this.FindState ();
-        GUI.Box (new Rect (10, 10, 200, 25), String.Format ("Current Score: {0}", this.CurrentScore (state)));
-        GUI.Box (new Rect (10, 45, 200, 25), String.Format ("Need to Destroy: {0} bridges", this.bridgesDestroyedForTurn - this.bridgeDestroyedDuringTurnCount));
+        GUI.Box (new Rect (10, 10, 200, 25), String.Format ("Current Bridges: {0}", state.bridges.Count));
+        GUI.Box (new Rect (10, 45, 200, 25), String.Format ("Max Bridges to End Turn: {0}", this.maxBridgesToEndTurn));
         if (this.errorMessage != null) {
             GUI.Box (new Rect (10, 80, 500, 25), this.errorMessage);
         }
