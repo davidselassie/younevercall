@@ -8,14 +8,15 @@ public class LevelController : MonoBehaviour
 {
     private int maxBridgesToEndTurn;
     private IslandComponent mouseDownIsland = null;
-    private GameObject newBridge;
     public GameObject bridgeFire;
     public GameObject bridgePrefab;
-    public float maxBridgeLength = 12.0f;
-    private string errorMessage = null;
+    public float maxBridgeLength = 14.0f;
+    private string errorMessage;
+    private bool gameOver;
 
     void Start ()
     {
+        this.gameOver = false;
         WorldState state = this.FindState ();
         foreach (IslandComponent a in state.islands) {
             foreach (IslandComponent b in state.islands) {
@@ -72,7 +73,7 @@ public class LevelController : MonoBehaviour
         GameObject rubble = Instantiate (bridgeFire, bridge.transform.position, bridge.transform.rotation) as GameObject;
         rubble.transform.localScale = bridge.transform.localScale;
         Destroy (bridge.gameObject);
-        state.bridges.Remove(bridge);
+        state.bridges.Remove (bridge);
     }
 
     private void BuildBridge (WorldState state, IslandComponent island1, IslandComponent island2)
@@ -83,7 +84,7 @@ public class LevelController : MonoBehaviour
             bool bridgeAlreadyExists = state.AllIslandsAccessibleFromIsland (island1).Contains (island2);
             if (!bridgeAlreadyExists) {
                 //make a new bridge connecting them
-                newBridge = Instantiate (bridgePrefab, (island2.transform.position + island1.transform.position) / 2, Quaternion.identity) as GameObject;
+                GameObject newBridge = Instantiate (bridgePrefab, (island2.transform.position + island1.transform.position) / 2, Quaternion.identity) as GameObject;
                 this.errorMessage = null;
                 
                 //the bridge prefab is an empty game object, so its child the cylinder is what we want to play with
@@ -105,18 +106,38 @@ public class LevelController : MonoBehaviour
         }
     }
 
+    private bool IsGameOver ()
+    {
+        return this.maxBridgesToEndTurn < 1;
+    }
+
+    private void OnGameOver (WorldState state)
+    {
+        this.errorMessage = String.Format ("Game over. You got {0} family members together! Space to play again.", this.CurrentScore (state));
+    }
+
     void Update ()
     {
         if (Input.GetKeyDown (KeyCode.Space)) {
             WorldState state = this.FindState ();
-            if (this.CanAdvanceTurn (state)) {
+            if (this.gameOver) {
+                Application.LoadLevel(Application.loadedLevel);
+            } else if (this.CanAdvanceTurn (state)) {
                 this.PerformEndTurnStateUpdates (state);
                 this.UpdateGameObjectsToReflectAbstractState (state);
-                this.errorMessage = null;
+                if (this.CanAdvanceTurn(state)) {
+                    this.errorMessage = "Press space to end turn!";
+                } else {
+                    this.errorMessage = null;
+                }
+                if (this.IsGameOver ()) {
+                    this.gameOver = true;
+                    this.OnGameOver (state);
+                }
             } else {
                 this.errorMessage = "You need fewer bridges before this turn can end.";
             }
-        } else if (Input.GetMouseButtonDown (0)) {
+        } else if (Input.GetMouseButtonDown (0) && !this.gameOver) {
             GameObject clicked = this.ClickedObject ();
             if (clicked) {
                 BridgeComponent clickedBridge = clicked.GetComponent<BridgeComponent> ();
@@ -134,7 +155,7 @@ public class LevelController : MonoBehaviour
                     this.mouseDownIsland = clickedIsland;
                 }
             }
-        } else if (Input.GetMouseButtonUp (0)) {
+        } else if (Input.GetMouseButtonUp (0) && !this.gameOver) {
             GameObject clicked = this.ClickedObject ();
             if (clicked) {
                 IslandComponent clickedIsland = clicked.GetComponent<IslandComponent> ();
