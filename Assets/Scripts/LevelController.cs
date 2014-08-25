@@ -11,7 +11,9 @@ public class LevelController : MonoBehaviour
     private GameObject newBridge;
     public GameObject bridgeFire;
     public GameObject bridgePrefab;
-    public float maxBridgeLength = 6.0f;
+    public float maxBridgeLength = 12.0f;
+    public int bridgesDestroyedForTurn = 1;
+    private string errorMessage = null;
 
     // Use this for initialization
     void Start ()
@@ -22,6 +24,7 @@ public class LevelController : MonoBehaviour
                 BuildBridge (a, b);
             }
         }
+        this.errorMessage = null;
         this.bridgeDestroyedDuringTurnCount = 0;
     }
 
@@ -51,11 +54,7 @@ public class LevelController : MonoBehaviour
 
     private bool CanAdvanceTurn ()
     {
-        bool enoughBridgesDestroyed = bridgeDestroyedDuringTurnCount >= 1;
-        if (!enoughBridgesDestroyed) {
-            Debug.Log ("Can't advance turn: not enough bridges destroyed. Destroyed ==" + bridgeDestroyedDuringTurnCount);
-        }
-        return enoughBridgesDestroyed;
+        return this.bridgeDestroyedDuringTurnCount >= this.bridgesDestroyedForTurn;
     }
 
     private GameObject ClickedObject ()
@@ -78,14 +77,21 @@ public class LevelController : MonoBehaviour
         rubble.transform.localScale = bridge.transform.localScale;
         Destroy (bridge.gameObject);
         this.bridgeDestroyedDuringTurnCount++;
+        if (this.CanAdvanceTurn()) {
+            this.errorMessage = "Press space to advance turn!";
+        } else {
+            this.errorMessage = null;
+        }
     }
 
     private void BuildBridge (IslandComponent island1, IslandComponent island2)
     {
-        //and if those two islands were close enough together but not the same island
-        if ((island1.transform.position - island2.transform.position).magnitude <= maxBridgeLength
-            && island1 != island2) {
+        if ((island1.transform.position - island2.transform.position).magnitude > maxBridgeLength) {
+            this.errorMessage = "Can't build bridge! Would be too long.";
+            return;
+        }
 
+        if (island1 != island2) {
             //and make sure there isn't a bridge connecting those two already
             IList<BridgeComponent> allBridges = FindObjectsOfType (typeof(BridgeComponent)) as BridgeComponent[];
             int lengthOfAllBridges = allBridges.Count;
@@ -99,10 +105,10 @@ public class LevelController : MonoBehaviour
             }
 
             if (!bridgeAlreadyExists) {
-            
                 //make a new bridge connecting them
                 newBridge = Instantiate (bridgePrefab, (island2.transform.position + island1.transform.position) / 2, Quaternion.identity) as GameObject;
                 this.bridgeDestroyedDuringTurnCount--;
+                this.errorMessage = null;
                 
                 //the bridge prefab is an empty game object, so its child the cylinder is what we want to play with
                 BridgeComponent newBridgeComponents = newBridge.GetComponentInChildren <BridgeComponent> ();
@@ -117,6 +123,8 @@ public class LevelController : MonoBehaviour
                 
                 //announce what the two islands were that you're connecting
                 //Debug.Log ("Making bridge from " + island1 + " to " + island2);
+            } else {
+                this.errorMessage = "There's already a bridge there.";
             }
         }
     }
@@ -129,6 +137,7 @@ public class LevelController : MonoBehaviour
             WorldState state = this.FindState ();
             this.TurnUpdateComponents (state);
             this.UpdateGameObjectsToReflectAbstractState (state);
+            this.errorMessage = null;
         }
 
         if (Input.GetMouseButtonDown (0)) {
@@ -159,12 +168,16 @@ public class LevelController : MonoBehaviour
 
     public int CurrentScore (WorldState state)
     {
-        return state.Census().Select(islandChars => islandChars.Value.Count).Max();
+        return state.Census ().Select (islandChars => islandChars.Value.Count).Max ();
     }
 
     public void OnGUI ()
     {
         WorldState state = this.FindState ();
         GUI.Box (new Rect (10, 10, 200, 25), String.Format ("Current Score: {0}", this.CurrentScore (state)));
+        GUI.Box (new Rect (10, 45, 200, 25), String.Format ("Need to Destroy: {0} bridges", this.bridgesDestroyedForTurn - this.bridgeDestroyedDuringTurnCount));
+        if (this.errorMessage != null) {
+            GUI.Box (new Rect (10, 80, 500, 25), this.errorMessage);
+        }
     }
 }
