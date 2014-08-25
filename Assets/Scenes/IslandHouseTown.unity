@@ -6880,9 +6880,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4347c178884e4fb5ba7b811b49d430f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bridgeFire: {fileID: 100000, guid: 893c83f879c5929498eb738a1c146e43, type: 2}
+  bridgeFire: {fileID: 100032, guid: 839388e4e8c00497d9b8adab0d21c488, type: 2}
   bridgePrefab: {fileID: 100002, guid: 1ab5c3d32f6114749b525766dd5bac8e, type: 2}
   maxBridgeLength: 14
+  guiFont: {fileID: 12800000, guid: 117ca8553587d4d269c3ae14c63026d3, type: 3}
 --- !u!4 &774835753
 Transform:
   m_ObjectHideFlags: 0
