@@ -74,7 +74,7 @@ public class LevelController : MonoBehaviour
 
     private void DestroyBridge (BridgeComponent bridge)
     {
-        Debug.Log ("Destroying bridge from " + bridge.islandA.ToString () + " to " + bridge.islandB.ToString ());
+        //Debug.Log ("Destroying bridge from " + bridge.islandA.ToString () + " to " + bridge.islandB.ToString ());
         GameObject rubble = Instantiate (bridgeFire, bridge.transform.position, bridge.transform.rotation) as GameObject;
         rubble.transform.localScale = bridge.transform.localScale;
         Destroy (bridge.gameObject);
@@ -117,7 +117,7 @@ public class LevelController : MonoBehaviour
                 newBridge.transform.localScale = new Vector3 (1, 1, (island1.transform.position - island2.transform.position).magnitude * 0.85f);
                 
                 //announce what the two islands were that you're connecting
-                Debug.Log ("Making bridge from " + island1 + " to " + island2);
+                //Debug.Log ("Making bridge from " + island1 + " to " + island2);
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class IslandComponent : MonoBehaviour
 {
+
     public List<WaypointComponent> waypoints;
 
     void Start ()
