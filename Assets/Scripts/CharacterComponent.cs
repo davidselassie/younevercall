@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public abstract class CharacterComponent : MonoBehaviour
 {
     public IslandComponent island;  // Never set directly other than in Unity inspector, always use Move* functions.
-    private WaypointComponent islandWaypoint;
+    public WaypointComponent islandWaypoint;
     public List<IslandComponent> islandHistory = new List<IslandComponent> ();
     public float turnSpeed = 4.0f;
     public float moveSpeed = 10.0f;
@@ -25,9 +25,8 @@ public abstract class CharacterComponent : MonoBehaviour
             // Occupy a new one.
             this.islandWaypoint = newIsland.UnoccupiedWaypoint ();
             this.islandWaypoint.occupiedBy = this;
-
-            transform.LookAt (this.islandWaypoint.transform.position);
         }
+        transform.LookAt (this.islandWaypoint.transform.position);
         this.island = newIsland;
         islandHistory.Add (this.island);
     }

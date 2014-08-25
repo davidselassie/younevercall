@@ -17,7 +17,6 @@ public class LevelController : MonoBehaviour
     void Start ()
     {
         WorldState state = this.FindState ();
-        this.UpdateGameObjectsToReflectAbstractState (state);
         foreach (IslandComponent a in state.islands) {
             foreach (IslandComponent b in state.islands) {
                 BuildBridge (a, b);
